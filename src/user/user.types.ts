@@ -17,9 +17,11 @@ export class User implements IUser {
   @Field(() => ID)
   id: string;
 
+  @IsNotEmpty({message: "Le nom de l''utilisateur n''est pas défini"})
   @Field(() => String)
   name: string;
 
+  @MaxDate(new Date(),{message: "La date de naissance ne peut pas être définie dans le future"})	
   @Field(() => Date, { nullable: true })
   birthdate?: Maybe<Date>;
 }
