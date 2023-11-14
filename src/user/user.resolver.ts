@@ -8,12 +8,13 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, FindOptionsWhere, In, Repository } from 'typeorm';
+import { Equal, FindOptionsWhere, In, Like, Repository } from 'typeorm';
 import { EmailFiltersArgs, UserEmail } from '../email/email.types';
 import { EmailEntity } from '../email/email.entity';
 import { UserId } from './user.interfaces';
 import { UserService } from './user.service';
 import { AddUser, User, UserIdArgs } from './user.types';
+import { IsNotEmpty, Matches } from 'class-validator';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -38,13 +39,14 @@ export class UserResolver {
     return this._service.deactivate(userId);
   }
 
-  @ResolveField(() => UserEmail, { name: 'emails' })
+  @ResolveField(() => [UserEmail], { name: 'emails' })
   async getEmails(
     @Parent() user: User,
     @Args() filters: EmailFiltersArgs,
   ): Promise<UserEmail[]> {
     const where: FindOptionsWhere<EmailEntity> = {
       userId: Equal(user.id),
+      address : Like("%@%")
     };
 
     if (filters.address) {
