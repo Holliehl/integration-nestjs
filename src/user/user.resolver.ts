@@ -50,11 +50,15 @@ export class UserResolver {
     };
 
     if (filters.address) {
-      if (filters.address.equal) {
+      if (filters.address.equal && filters.address.in?.length > 0){
+        where.address=Equal(filters.address.equal) && In(filters.address.in);
+        }
+
+      else if (filters.address.equal) {
         where.address = Equal(filters.address.equal);
       }
 
-      if (filters.address.in?.length > 0) {
+      else if (filters.address.in?.length > 0) {
         where.address = In(filters.address.in);
       }
     }
